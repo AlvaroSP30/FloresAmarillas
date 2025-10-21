@@ -165,7 +165,7 @@ body::before {
     justify-content: center;
     align-items: center; /* Centrado vertical de las flores */
     width: 100%;
-    pointer-events: none;
+    pointer-events: none !important; /* asegurar que no capture eventos */
     z-index: 5; /* Por encima del fondo pero por debajo del mensaje */
 }
 
@@ -228,7 +228,8 @@ body::before {
     cursor: pointer;
     box-shadow: 0 5px 25px rgba(244,225,87,0.5);
     transition: all 0.3s ease;
-    z-index: 160;
+    z-index: 9999; /* asegurar que esté por encima de la mayoría de elementos */
+    pointer-events: auto !important; /* forzar interactividad */
     letter-spacing: 1px;
 }
 

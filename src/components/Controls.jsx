@@ -21,7 +21,12 @@ function Controls({ musicPlaying, setMusicPlaying, musicRef, handleSendCariño }
     };
 
     const handleButtonClick = () => {
-        handleSendCariño();
+        // llamar a la función pasada por props (si existe)
+        if (typeof handleSendCariño === 'function') {
+            handleSendCariño();
+        }
+        // dispatch a backup event so App can respond in case prop wiring failed
+        document.dispatchEvent(new CustomEvent('send-cariño'));
         
         // Efecto visual en el botón
         const originalText = '💛 Enviar Flores 💛';
@@ -44,6 +49,7 @@ function Controls({ musicPlaying, setMusicPlaying, musicRef, handleSendCariño }
                 // APLICACIÓN DE CLASE CRUCIAL
                 className="send-button" 
                 id="sendButton"
+                type="button"
                 onClick={handleButtonClick}
                 style={buttonStyle}
             >

@@ -125,6 +125,21 @@ useEffect(() => {
         }, 4000);
     };
 
+    // Backup: listen for a custom event dispatched from Controls in case prop wiring fails
+    useEffect(() => {
+        const onSendEvent = () => {
+            setIsSendingCariño(true);
+            setShowConfetti(true);
+            setConfettiKey(prev => prev + 1);
+            setTimeout(() => {
+                setIsSendingCariño(false);
+                setShowConfetti(false);
+            }, 4000);
+        };
+        document.addEventListener('send-cariño', onSendEvent);
+        return () => document.removeEventListener('send-cariño', onSendEvent);
+    }, []);
+
     const createMiniConfetti = (x, y) => {
         const newPetal = {
             id: Date.now() + Math.random(),
