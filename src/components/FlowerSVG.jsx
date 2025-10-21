@@ -4,7 +4,7 @@ import React from 'react';
 // El SVG de la flor es el mismo que tenías en la función createFlower, 
 // solo que adaptado a la sintaxis JSX.
 
-const FlowerSVG = React.forwardRef(({ size, delay, swayClass, onClick, onMouseEnter, style }, ref) => {
+const FlowerSVG = React.forwardRef(({ size = 48, animationDelay = 0, swayClass = '', className = '', petalColor, centerColor, isBlooming = false, gradientId, onClick, onMouseEnter, style }, ref) => {
     // Definición de Gradiente (debe estar dentro del SVG para que funcione correctamente)
 
     return (
@@ -13,17 +13,17 @@ const FlowerSVG = React.forwardRef(({ size, delay, swayClass, onClick, onMouseEn
             width={size}
             height={size * 1.5}
             viewBox="0 0 100 150"
-            className={`flower ${swayClass}`}
+            className={`${className} ${swayClass} ${isBlooming ? 'bloom' : ''}`.trim()}
             /* merge incoming style (left/top/position) with animationDelay */
-            style={{ ...(style || {}), animationDelay: `${delay}s` }}
+            style={{ ...(style || {}), animationDelay: `${animationDelay}s`, transformOrigin: '50% 100%' }}
             onClick={onClick}
             onMouseEnter={onMouseEnter}
             xmlns="http://www.w3.org/2000/svg"
         >
             <defs>
-                <radialGradient id={`petalGradient-${delay}`}>
-                    <stop offset="0%" style={{ stopColor: '#fff566', stopOpacity: 1 }} />
-                    <stop offset="100%" style={{ stopColor: '#f4e157', stopOpacity: 1 }} />
+                <radialGradient id={gradientId || `petalGradient-${animationDelay}`}>
+                    <stop offset="0%" style={{ stopColor: petalColor || '#fff566', stopOpacity: 1 }} />
+                    <stop offset="100%" style={{ stopColor: petalColor || '#f4e157', stopOpacity: 1 }} />
                 </radialGradient>
             </defs>
             
@@ -46,7 +46,7 @@ const FlowerSVG = React.forwardRef(({ size, delay, swayClass, onClick, onMouseEn
                usaremos el gradiente genérico. El JS original usa un bucle para dibujar los 5 pétalos. */}
                
             {/* Ejemplo simplificado de un pétalo central con el gradiente (el código original es más complejo): */}
-            <g fill={`url(#petalGradient-${delay})`} stroke="#e8d44d" strokeWidth="0.5">
+            <g fill={`url(#${gradientId || `petalGradient-${animationDelay}`})`} stroke="#e8d44d" strokeWidth="0.5">
                 {[0, 72, 144, 216, 288].map(angle => (
                     <path
                         key={angle}
@@ -58,7 +58,7 @@ const FlowerSVG = React.forwardRef(({ size, delay, swayClass, onClick, onMouseEn
             
             {/* Centro (Pistilo y Estambres) */}
             <g>
-                <circle cx="50" cy="40" r="6" fill="#d4a017" />
+                <circle cx="50" cy="40" r="6" fill={centerColor || '#d4a017'} />
                 {[...Array(8)].map((_, i) => {
                     const angle = (i * 45) * Math.PI / 180;
                     const dotX = 50 + Math.cos(angle) * 3;

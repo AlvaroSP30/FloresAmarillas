@@ -1,73 +1,74 @@
 // src/components/FlowersGarden.jsx - CORREGIDO (Posición y Tamaño)
-import React, { useRef, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import FlowerSVG from './FlowerSVG.jsx';
-import useFlowerEffects from '../hooks/useFlowerEffects.js';
-
-const FLOWER_COUNT = 15; 
+import '../assets/style.css';
 
 const FlowersGarden = ({ isSendingCariño, createMiniConfetti }) => {
-    
-    // Generar las propiedades de las flores una sola vez, usando useMemo para optimización
-    const floatingFlowerProps = useMemo(() => {
-        return Array.from({ length: FLOWER_COUNT }, (_, index) => {
-            // Generamos una posición aleatoria para el CENTRO de la flor
-            // LIMITAR a un área central para evitar que todas aparezcan en la esquina
-            // Por ejemplo, X entre 15% y 85%, Y entre 25% y 75%.
-            const minX = 15; const maxX = 85;
-            const minY = 25; const maxY = 75;
-            const randomX = Math.random() * (maxX - minX) + minX; // Porcentaje X (minX - maxX)
-            const randomY = Math.random() * (maxY - minY) + minY; // Porcentaje Y (minY - maxY)
-            
-            // Tamaños más grandes: entre 90 y 140 (antes 70-110)
-            const size = Math.floor(Math.random() * 50) + 90; 
-            
-            const delay = index * 0.3 + Math.random(); 
-            const swayClass = `sway-${(index % 3) + 1}`;
+    // Más flores para simular un jardín
+    const FLOWER_COUNT = 70; // más flores para cubrir la pantalla
 
-            return {
-                key: index,
-                x: randomX,
-                y: randomY,
-                size: size,
-                delay: delay,
-                swayClass: swayClass,
-            };
-        });
-    }, []); // El array vacío asegura que esto se calcule una sola vez al montar
+    // Genera posiciones y tamaños una vez (useMemo para estabilidad)
+    const flowers = useMemo(() => {
+        const arr = [];
+        for (let i = 0; i < FLOWER_COUNT; i++) {
+            // Distribución: cubrir prácticamente toda la pantalla
+            // pero con sesgo hacia el centro usando una suma de dos randoms (distribución triangular)
+            const bias = () => (Math.random() + Math.random()) / 2;
+            const minX = 5, maxX = 95;
+            const minY = 15, maxY = 85;
+            const x = minX + bias() * (maxX - minX);
+            const y = minY + bias() * (maxY - minY);
+            // Aumentar el tamaño en un 50% respecto al base previo
+            const base = 44 * 1.5; // 66px base
+            const scale = Math.random() * 0.9 + 0.9; // 0.9 - 1.8
+            const size = Math.round(base * scale); // tamaño en px
+            // Variaciones de amarillo/ámbar para pétalos
+            const petalColors = ['#f4e157', '#fff176', '#ffd54f', '#ffeb3b', '#fdd835'];
+            const centerColors = ['#f57f17', '#ffb300', '#ff8f00', '#bf360c'];
+            const petal = petalColors[Math.floor(Math.random() * petalColors.length)];
+            const center = centerColors[Math.floor(Math.random() * centerColors.length)];
 
-    // Almacena referencias a los elementos de las flores
-    const flowerRefs = useRef([]); 
-    flowerRefs.current = floatingFlowerProps.map((_, i) => flowerRefs.current[i] ?? React.createRef());
-    
-    // Hook para la interactividad
-    useFlowerEffects(flowerRefs.current, isSendingCariño, createMiniConfetti);
+            arr.push({
+                id: `flower-${i}-${Date.now()}`,
+                left: `${x}%`,
+                top: `${y}%`,
+                size,
+                petal,
+                center,
+                sway: `sway-${(i % 3) + 1}`,
+                // base delay used for per-flower staggering (seconds)
+                baseDelay: Math.random() * 1.4
+            });
+        }
+        return arr;
+    }, []);
 
     return (
-        <div className="flowers-container" id="flowersContainer">
-            {floatingFlowerProps.map((props, index) => {
-                // Ajuste de posición: el SVG tiene un viewBox de 100x150.
-                // Usamos props.size como el ancho (width) del SVG.
-                // La altura será props.size * 1.5.
-                // Para centrar, restamos la mitad del ancho y la mitad de la altura.
-                const adjustmentX = props.size / 2; // La mitad del ancho del SVG
-                const adjustmentY = (props.size * 1.5) / 2; // La mitad de la altura del SVG
-                
-                // Calculamos la posición final para que el CENTRO de la flor esté en (props.x, props.y)
-                // Usamos vw para X y vh para Y, y restamos la mitad del tamaño para centrar.
-                const finalX = `calc(${props.x}vw - ${adjustmentX}px)`;
-                const finalY = `calc(${props.y}vh - ${adjustmentY}px)`;
-
-                return (
-                    <FlowerSVG
-                        key={props.key}
-                        ref={flowerRefs.current[index]}
-                        size={props.size}
-                        delay={props.delay}
-                        swayClass={props.swayClass + (isSendingCariño ? ' fast-sway' : '')}
-                        style={{ left: finalX, top: finalY, position: 'absolute' }}
-                    />
-                );
-            })}
+        <div className="flowers-container" aria-hidden="true">
+            {flowers.map((f, idx) => (
+                <FlowerSVG
+                    key={f.id}
+                    className={`flower ${f.sway}`}
+                    size={f.size}
+                    isBlooming={!!isSendingCariño}
+                    // stagger: combine baseDelay with index-based offset when blooming (seconds)
+                    animationDelay={isSendingCariño ? (f.baseDelay + idx * 0.06) : f.baseDelay}
+                    gradientId={f.id}
+                    style={{
+                        position: 'absolute',
+                        left: f.left,
+                        top: f.top,
+                        zIndex: 10
+                    }}
+                    petalColor={f.petal}
+                    centerColor={f.center}
+                    onClick={(e) => {
+                        // Propagar efecto si existe createMiniConfetti
+                        const rect = e.currentTarget.getBoundingClientRect();
+                        createMiniConfetti?.(rect.left + rect.width / 2, rect.top + rect.height / 2);
+                    }}
+                />
+            ))}
         </div>
     );
 };

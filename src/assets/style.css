@@ -224,21 +224,47 @@ body::before {
 
 /* Contenedor de flores */
 .flowers-container {
-    width: 100%;
-    height: 100%;
     position: absolute;
-    top: 0;
-    left: 0;
-    pointer-events: none; 
+    inset: 0; /* top:0; right:0; bottom:0; left:0; */
+    pointer-events: none; /* evita bloquear clicks; cada flor individual habilita pointer-events si se necesita */
+    z-index: 5;
+}
+
+/* Posicionar las flores en la capa inferior del layout (jardín) */
+.flowers-container {
+    display: block;
+    pointer-events: none;
+}
+
+/* Cada flor SVG se posiciona absolutamente; habilitar interacciones solo en la flor */
+.flower {
+    pointer-events: auto;
+    transition: transform 420ms cubic-bezier(.2,.9,.2,1), opacity 420ms ease;
+    transform-origin: 50% 100%;
+    opacity: 0.98;
+    /* posicion base: centrar el SVG respecto al left/top */
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* Bloom animation: scale from 0 to normal and fade in, like a bud opening */
+.bloom {
+    animation: bloomGrow 700ms cubic-bezier(.2,.9,.2,1) forwards;
+}
+
+@keyframes bloomGrow {
+    0% { transform: translate(-50%, 0%) scale(0.18); opacity: 0; }
+    40% { transform: translate(-50%, -30%) scale(0.9); opacity: 0.9; }
+    70% { transform: translate(-50%, -48%) scale(1.06); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 }
 
 /* Estilos de flores SVG */
 .flower {
     position: absolute;
     cursor: pointer;
-    pointer-events: all; 
+    pointer-events: auto;
     filter: drop-shadow(0 5px 15px rgba(244, 225, 87, 0.4));
-    transition: all 0.4s ease;
+    transition: transform 0.18s ease;
     opacity: 0;
     /* La posición se define en el style prop del JSX */
     animation: flowerAppear 2s ease-out forwards;
