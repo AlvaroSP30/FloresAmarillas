@@ -24,7 +24,7 @@ function Controls({ musicPlaying, setMusicPlaying, musicRef, handleSendCariño }
         handleSendCariño();
         
         // Efecto visual en el botón
-        const originalText = '💛 Enviar mi cariño 💛';
+        const originalText = '💛 Enviar Flores 💛';
         setSendButtonText('✨ ¡Cariño enviado! ✨');
         
         setTimeout(() => {
@@ -33,7 +33,7 @@ function Controls({ musicPlaying, setMusicPlaying, musicRef, handleSendCariño }
     };
 
     // Estilo dinámico para el botón (ya que lo manipulabas con JS en el código original)
-    const buttonStyle = sendButtonText !== '💛 Enviar mi cariño 💛' 
+    const buttonStyle = sendButtonText !== '💛 Enviar Flores 💛' 
         ? { background: 'linear-gradient(135deg, #98fb98, #7fffd4)', color: '#0a0e1a' } 
         : {};
 

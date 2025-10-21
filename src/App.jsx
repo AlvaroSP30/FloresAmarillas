@@ -3,6 +3,7 @@ import Controls from './components/Controls.jsx';
 import FlowersGarden from './components/FlowersGarden.jsx';
 import Confetti from './components/Confetti.jsx';
 import Fireflies from './components/Fireflies.jsx';
+import Sky from './components/Sky.jsx';
 import './assets/style.css'; 
 
 // Definición de la canción y las letras
@@ -75,41 +76,43 @@ useEffect(() => {
 
     // --- Lyrics Synchronization Logic ---
     useEffect(() => {
-        if (!musicPlaying) {
-            setCurrentLyric(SONG.lyrics[0]);
-            return;
-        }
-
         const audio = musicRef.current;
-        let interval;
+        if (!audio) return;
+        let rafId = null;
+        let lastIndex = -1;
 
-        const syncLyrics = () => {
-            const currentTime = (audio.currentTime || 0) * 1000; // a ms
-
-            let nextLyric = SONG.lyrics.find(lyric => currentTime < lyric.time);
-            let activeLyric;
-
-            if (nextLyric) {
-                const activeIndex = SONG.lyrics.indexOf(nextLyric) - 1;
-                activeLyric = SONG.lyrics[activeIndex] || SONG.lyrics[0];
-            } else {
-                activeLyric = SONG.lyrics[SONG.lyrics.length - 1];
+        const tick = () => {
+            const currentTimeMs = (audio.currentTime || 0) * 1000;
+            let newIndex = SONG.lyrics.length - 1;
+            for (let i = 0; i < SONG.lyrics.length; i++) {
+                if (currentTimeMs < SONG.lyrics[i].time) {
+                    newIndex = Math.max(0, i - 1);
+                    break;
+                }
             }
-
-            if (activeLyric && activeLyric.text !== currentLyric.text) {
-                setCurrentLyric(activeLyric);
+            if (newIndex !== lastIndex) {
+                lastIndex = newIndex;
+                setCurrentLyric(SONG.lyrics[newIndex]);
             }
-
-            // No reiniciamos manualmente; dejamos que el audio se repita solo
-            if (audio.ended) {
-                audio.currentTime = 0;
-                audio.play();
-            }
+            rafId = requestAnimationFrame(tick);
         };
 
-        interval = setInterval(syncLyrics, 500);
-        return () => clearInterval(interval);
-    }, [musicPlaying, currentLyric.text]);
+        if (musicRef.current && !audio.paused) {
+            rafId = requestAnimationFrame(tick);
+        }
+
+        const onPlay = () => { if (!rafId) rafId = requestAnimationFrame(tick); };
+        const onPause = () => { if (rafId) { cancelAnimationFrame(rafId); rafId = null; } };
+
+        audio.addEventListener('play', onPlay);
+        audio.addEventListener('pause', onPause);
+
+        return () => {
+            if (rafId) cancelAnimationFrame(rafId);
+            audio.removeEventListener('play', onPlay);
+            audio.removeEventListener('pause', onPause);
+        };
+    }, [/* no dependencias para no reiniciar */]);
 
     // --- Interaction Handlers ---
     const handleSendCariño = () => {
@@ -150,6 +153,7 @@ useEffect(() => {
 
     return (
         <div className="container">
+            <Sky />
             <Fireflies />
             <FlowersGarden 
                 isSendingCariño={isSendingCariño}
