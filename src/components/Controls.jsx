@@ -30,7 +30,7 @@ function Controls({ musicPlaying, setMusicPlaying, musicRef, handleSendCariño }
         
         // Efecto visual en el botón
         const originalText = '💛 Flores Amarillas 💛';
-        setSendButtonText('✨ ¡Cariño enviado! ✨');
+        setSendButtonText('✨ ¡Flores Recividas! ✨');
         
         setTimeout(() => {
             setSendButtonText(originalText);
