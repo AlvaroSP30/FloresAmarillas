@@ -29,8 +29,8 @@ function Controls({ musicPlaying, setMusicPlaying, musicRef, handleSendCariño }
         document.dispatchEvent(new CustomEvent('send-cariño'));
         
         // Efecto visual en el botón
-        const originalText = '💛 Flores Amarillas 💛';
-        setSendButtonText('✨ ¡Flores Recividas! ✨');
+        const originalText = '✨ Rigg ✨';
+        setSendButtonText('💛 ¡Flores Recividas! 💛');
         
         setTimeout(() => {
             setSendButtonText(originalText);
