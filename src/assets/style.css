@@ -1,0 +1,424 @@
+/* Reset y estilos base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    overflow: hidden;
+    min-height: 100vh;
+    /* Fondo base con degradado suave para evitar franjas negras */
+    background: linear-gradient(180deg, #081022 0%, #0a0e1a 60%, #050612 100%);
+    position: relative;
+    color: white;
+}
+
+/* Fondo de estrellas animadas */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Crear el efecto de cielo estrellado */
+    background-image:
+        radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,0.95), transparent),
+        radial-gradient(2px 2px at 60% 70%, rgba(255,255,255,0.9), transparent),
+        radial-gradient(1px 1px at 50% 50%, rgba(255,255,255,0.85), transparent),
+        radial-gradient(1px 1px at 80% 10%, rgba(255,255,255,0.8), transparent),
+        radial-gradient(2px 2px at 90% 60%, rgba(255,255,255,0.9), transparent),
+        radial-gradient(1px 1px at 33% 85%, rgba(255,255,255,0.7), transparent),
+        radial-gradient(1px 1px at 15% 60%, rgba(255,255,255,0.6), transparent);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    animation: stars 120s linear infinite;
+    opacity: 0.45;
+    z-index: 0; /* colocar detrás de elementos con z > 0 */
+    pointer-events: none;
+}
+
+@keyframes stars {
+    0%, 100% { background-position: 0% 0%; }
+    50% { background-position: 100% 100%; }
+}
+
+/* Animación de las luciérnagas (firefly) */
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0) translateX(0);
+        opacity: 0.3;
+    }
+    50% {
+        transform: translateY(-20px) translateX(10px);
+        opacity: 0.8; 
+    }
+}
+
+/* Partículas flotantes tipo luciérnagas */
+.firefly {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #7fffd4; 
+    border-radius: 50%;
+    box-shadow: 0 0 10px #7fffd4, 0 0 20px #7fffd4; 
+    animation: float 6s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 5; 
+}
+
+/* Contenedor principal de la aplicación */
+.container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    /* Usar flex para centrar el contenido de forma más fiable */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2; /* por encima del pseudo-elemento de estrellas */
+}
+
+/* (Autoplay overlay styles removed) */
+
+
+/* Caja de mensaje - Centra y contiene el texto de la canción */
+.message-box {
+    /* Usar posicionamiento relativo y flexbox del .container para centrar */
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    text-align: center;
+    z-index: 150;
+    background: transparent;
+    padding: 30px 40px;
+    border-radius: 20px;
+    max-width: 90%;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Display de letras sincronizadas */
+.lyrics-display {
+    font-size: 2.2rem;
+    color: #f4e157; 
+    font-style: italic;
+    line-height: 1.8;
+    text-shadow: 
+        0 0 15px rgba(244, 225, 87, 0.9),
+        0 0 25px rgba(244, 225, 87, 0.6),
+        2px 2px 6px rgba(0, 0, 0, 0.9);
+    font-weight: 300;
+    letter-spacing: 2px;
+    opacity: 0; /* Inicialmente invisible */
+    transition: opacity 0.5s ease-in-out, transform 0.4s ease;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    transform: translateY(0);
+}
+
+/* CLASE CLAVE: Fuerza la visibilidad del mensaje cuando está activo */
+.lyrics-display-active {
+    opacity: 1; 
+    transform: translateY(0);
+}
+
+
+/* Animación de aparición para controles (botón y música) */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        /* Usa translate X para el botón */
+        transform: translate(-50%, 0); 
+    }
+    100% {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+/* Animación específica para el control de música */
+@keyframes fadeInMusic {
+    0% { opacity: 0; transform: translateY(-10px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+
+/* Contenedor de flores */
+.flowers-container {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none; 
+}
+
+/* Estilos de flores SVG */
+.flower {
+    position: absolute;
+    cursor: pointer;
+    pointer-events: all; 
+    filter: drop-shadow(0 5px 15px rgba(244, 225, 87, 0.4));
+    transition: all 0.4s ease;
+    opacity: 0;
+    /* La posición se define en el style prop del JSX */
+    animation: flowerAppear 2s ease-out forwards;
+    z-index: 10;
+}
+
+.flower:hover {
+    transform: scale(1.2) translateY(-10px) !important;
+    filter: drop-shadow(0 10px 30px rgba(244, 225, 87, 0.8));
+    z-index: 100;
+}
+
+.flower.clicked {
+    animation: flowerPulse 0.6s ease-in-out;
+}
+
+/* Animación de aparición de flores (Ajustada para aparición suave en cualquier punto) */
+@keyframes flowerAppear {
+    0% {
+        opacity: 0;
+        transform: scale(0.2); 
+    }
+    100% {
+        opacity: 1;
+        /* El scale(1) es el tamaño final dado por el JSX (90px - 140px) */
+        transform: scale(1);
+    }
+}
+
+/* Animación de pulso al hacer clic */
+@keyframes flowerPulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    25% {
+        transform: scale(1.3) rotate(10deg);
+    }
+    75% {
+        transform: scale(1.3) rotate(-10deg);
+    }
+}
+
+/* Animaciones de balanceo (sway) para las flores */
+@keyframes sway1 {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(3deg); }
+    75% { transform: rotate(-3deg); }
+}
+
+@keyframes sway2 {
+    0%, 100% { transform: rotate(0deg); }
+    30% { transform: rotate(-4deg); }
+    70% { transform: rotate(4deg); }
+}
+
+@keyframes sway3 {
+    0%, 100% { transform: rotate(0deg); }
+    40% { transform: rotate(2deg); }
+    80% { transform: rotate(-2deg); }
+}
+
+/* Clases de animación combinadas para flores */
+.flower.sway-1 {
+    animation: flowerAppear 2s ease-out forwards, sway1 5s ease-in-out infinite;
+}
+
+.flower.sway-2 {
+    animation: flowerAppear 2s ease-out forwards, sway2 6s ease-in-out infinite;
+}
+
+.flower.sway-3 {
+    animation: flowerAppear 2s ease-out forwards, sway3 4.5s ease-in-out infinite;
+}
+
+/* Animación rápida cuando se envía el cariño */
+@keyframes swayFast {
+    0%, 100% { transform: rotate(0deg) scale(1); }
+    25% { transform: rotate(15deg) scale(1.1); }
+    75% { transform: rotate(-15deg) scale(1.1); }
+}
+
+.flower.fast-sway {
+    animation: swayFast 0.4s ease-in-out infinite !important;
+}
+
+/* Botón de enviar cariño - centrado en la parte inferior */
+.send-button {
+    position: fixed;
+    bottom: 6%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 15px 40px;
+    font-size: 1.1rem;
+    font-weight: 300;
+    color: #0a0e1a; 
+    background: linear-gradient(135deg, #f4e157, #e8d44d);
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 5px 25px rgba(244, 225, 87, 0.5);
+    transition: all 0.3s ease;
+    z-index: 160;
+    opacity: 1;
+    animation: none; /* Evitar animación que desplace el centrado */
+    letter-spacing: 1px;
+}
+
+.send-button:hover {
+    transform: translateX(-50%) scale(1.05) translateY(-3px);
+    box-shadow: 0 8px 35px rgba(244, 225, 87, 0.8);
+    background: linear-gradient(135deg, #fff566, #f4e157);
+}
+
+.send-button:active {
+    transform: translateX(-50%) scale(0.98);
+}
+
+/* Control de música - situarlo en la esquina superior derecha */
+.music-control {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    transform: none;
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    align-items: center;
+    z-index: 160;
+    opacity: 1;
+    animation: none;
+    background: rgba(10,14,26,0.45);
+    padding: 6px 10px;
+    border-radius: 12px;
+    border: 1px solid rgba(244,225,87,0.06);
+}
+
+
+.music-button {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    border: 2px solid rgba(244, 225, 87, 0.3);
+    background: rgba(10, 14, 26, 0.6); 
+    /* evitar blur excesivo para mejor contraste */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    font-size: 1.4rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Ajustar la etiqueta al lado derecho del botón (si existe) */
+.music-label {
+    font-size: 0.85rem;
+    color: #f4e157;
+    text-shadow: 0 0 10px rgba(244, 225, 87, 0.5);
+    letter-spacing: 1px;
+}
+
+/* Contenedor de confeti/pétalos */
+.confetti-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 50;
+}
+
+/* Partículas de confeti/pétalos */
+.petal {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.9;
+    pointer-events: none;
+    box-shadow: 0 0 10px rgba(244, 225, 87, 0.8);
+    animation: fall linear forwards;
+}
+
+@keyframes fall {
+    0% {
+        transform: translateY(0) rotate(0deg) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(720deg) scale(0.5);
+        opacity: 0;
+    }
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+    .lyrics-display {
+        font-size: 1.4rem;
+        letter-spacing: 1px;
+    }
+    
+    .message-box {
+        padding: 20px 25px;
+    }
+    
+    .send-button {
+        font-size: 0.95rem;
+        padding: 12px 30px;
+        bottom: 5%;
+    }
+    
+    .flower {
+        /* Reducir tamaño base en pantallas pequeñas */
+        transform: scale(0.7); 
+    }
+    
+    .flower.sway-1, .flower.sway-2, .flower.sway-3 {
+        /* Asegurar que el transform: scale(0.7) se aplique */
+        transform: scale(0.7);
+    }
+    
+    .music-control {
+        bottom: 12%;
+    }
+}
+
+@media (max-width: 480px) {
+    .lyrics-display {
+        font-size: 1.1rem;
+        line-height: 1.5;
+        letter-spacing: 0.5px;
+    }
+    
+    .music-control {
+        bottom: 10%;
+    }
+    
+    .music-button {
+        width: 45px;
+        height: 45px;
+        font-size: 1.1rem;
+    }
+    
+    .music-label {
+        font-size: 0.75rem;
+    }
+}
