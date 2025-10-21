@@ -145,11 +145,7 @@ useEffect(() => {
     if (musicPlaying) {
         lyricsText = currentLyric.text;
         isActive = true;
-    } else {
-        lyricsText = "Presiona el botón '💛 Enviar mi cariño 💛' para comenzar la magia.";
-        isActive = true;
     }
-
     const lyricsClass = `lyrics-display ${isActive ? 'lyrics-display-active' : ''}`;
 
     return (
