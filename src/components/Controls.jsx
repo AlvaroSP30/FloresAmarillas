@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 
 function Controls({ musicPlaying, setMusicPlaying, musicRef, handleSendCariño }) {
-    const [sendButtonText, setSendButtonText] = useState('💛 Enviar mi cariño 💛');
+    const [sendButtonText, setSendButtonText] = useState('💛 Para tí 💛');
 
     const toggleMusic = () => {
         const audio = musicRef.current;
@@ -29,7 +29,7 @@ function Controls({ musicPlaying, setMusicPlaying, musicRef, handleSendCariño }
         document.dispatchEvent(new CustomEvent('send-cariño'));
         
         // Efecto visual en el botón
-        const originalText = '💛 Enviar Flores 💛';
+        const originalText = '💛 Flores Amarillas 💛';
         setSendButtonText('✨ ¡Cariño enviado! ✨');
         
         setTimeout(() => {

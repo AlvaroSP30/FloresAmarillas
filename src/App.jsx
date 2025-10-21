@@ -8,18 +8,17 @@ import './assets/style.css';
 
 // Definición de la canción y las letras
 const SONG = {
-    // Archivo en public/audio. Asegúrate de que el fichero exista exactamente con este nombre
     src: "/audio/Danny Ocean.mp3",
     lyrics: [
-        { text: "En este cielo oscuro, tú eres mi luz.", time: 0 },
-        { text: "Cada estrella es un reflejo de tu alma.", time: 4000 },
-        { text: "Mi corazón late al ritmo de tu nombre.", time: 8000 },
-        { text: "Y mi cariño es eterno, como el tiempo.", time: 12000 },
-        { text: "Gracias por existir.", time: 16000 },
-        { text: "Pulsa el botón 💛 y haz florecer la pantalla.", time: 20000 },
+        { text: "A veces, sin razón, apareces en mis pensamientos.", time: 0 },
+        { text: "Y en silencio, sonrío... porque me haces bien.", time: 4000 },
+        { text: "No busco explicarlo, solo disfrutar lo que siento.", time: 8000 },
+        { text: "Eres esa presencia tranquila que alegra mis días.", time: 12000 },
+        { text: "Gracias por existir, por ser parte de mis pensamientos bonitos.", time: 16000 },
     ],
-    duration: 25000 // Duración total para el loop
+    duration: 25000
 };
+
 
 const App = () => {
     const musicRef = useRef(null);
@@ -30,9 +29,10 @@ const App = () => {
     const [showConfetti, setShowConfetti] = useState(false);
     const [confettiKey, setConfettiKey] = useState(0);
     const [miniConfetti, setMiniConfetti] = useState([]);
+    const [showGarden, setShowGarden] = useState(false);
 
     // --- Audio Logic ---
-useEffect(() => {
+    useEffect(() => {
     const audio = new Audio(SONG.src);
     musicRef.current = audio;
     audio.loop = true;
@@ -116,18 +116,10 @@ useEffect(() => {
 
     // --- Interaction Handlers ---
     const handleSendCariño = () => {
-        setIsSendingCariño(true);
-        setShowConfetti(true);
-        setConfettiKey(prev => prev + 1);
+        // first make the garden visible, then trigger the bloom so the animation runs on mount
+        setShowGarden(true);
+        // small next-tick delay to allow FlowersGarden to mount
         setTimeout(() => {
-            setIsSendingCariño(false);
-            setShowConfetti(false);
-        }, 4000);
-    };
-
-    // Backup: listen for a custom event dispatched from Controls in case prop wiring fails
-    useEffect(() => {
-        const onSendEvent = () => {
             setIsSendingCariño(true);
             setShowConfetti(true);
             setConfettiKey(prev => prev + 1);
@@ -135,6 +127,23 @@ useEffect(() => {
                 setIsSendingCariño(false);
                 setShowConfetti(false);
             }, 4000);
+        }, 80);
+    };
+
+    // Backup: listen for a custom event dispatched from Controls in case prop wiring fails
+    useEffect(() => {
+        const onSendEvent = () => {
+            // show garden first
+            setShowGarden(true);
+            setTimeout(() => {
+                setIsSendingCariño(true);
+                setShowConfetti(true);
+                setConfettiKey(prev => prev + 1);
+                setTimeout(() => {
+                    setIsSendingCariño(false);
+                    setShowConfetti(false);
+                }, 4000);
+            }, 80);
         };
         document.addEventListener('send-cariño', onSendEvent);
         return () => document.removeEventListener('send-cariño', onSendEvent);
@@ -170,10 +179,12 @@ useEffect(() => {
         <div className="container">
             <Sky />
             <Fireflies />
-            <FlowersGarden 
-                isSendingCariño={isSendingCariño}
-                createMiniConfetti={createMiniConfetti}
-            />
+            {showGarden && (
+                <FlowersGarden 
+                    isSendingCariño={isSendingCariño}
+                    createMiniConfetti={createMiniConfetti}
+                />
+            )}
 
             {showConfetti && <Confetti key={confettiKey} />}
 

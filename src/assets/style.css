@@ -177,10 +177,13 @@ body::before {
     filter: drop-shadow(0 5px 15px rgba(244,225,87,0.4));
     transition: transform 0.18s ease, opacity 0.4s ease;
     opacity: 0;
-    animation: flowerAppear 2s ease-out forwards;
+    /* staggered appearance using per-flower variable */
+    animation: flowerAppear 1.2s ease-out forwards;
+    animation-delay: var(--appearance-delay, 0s);
     z-index: 10;
     transform-origin: center bottom;
-     transform: scale(2.5); /* 1.8 = 80% más grande, ajusta según necesites */
+    /* final visual scale (kept for consistency with previous styling) */
+    transform: translate(-50%, -50%) scale(2.5);
 }
 
 .flower:hover {
@@ -193,8 +196,9 @@ body::before {
 }
 
 @keyframes flowerAppear {
-    0% { opacity: 0; transform: scale(0.2); }
-    100% { opacity: 1; transform: scale(2.5); }
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.2); }
+    80% { opacity: 1; transform: translate(-50%, -50%) scale(2.6); }
+    100% { opacity: 1; transform: translate(-50%, -50%) scale(2.5); }
 }
 
 @keyframes flowerPulse {
@@ -208,9 +212,31 @@ body::before {
 @keyframes sway2 { 0%,100%{transform:rotate(0deg);}30%{transform:rotate(-4deg);}70%{transform:rotate(4deg);} }
 @keyframes sway3 { 0%,100%{transform:rotate(0deg);}40%{transform:rotate(2deg);}80%{transform:rotate(-2deg);} }
 
-.flower.sway-1 { animation: flowerAppear 2s ease-out forwards, sway1 5s ease-in-out infinite; }
-.flower.sway-2 { animation: flowerAppear 2s ease-out forwards, sway2 6s ease-in-out infinite; }
-.flower.sway-3 { animation: flowerAppear 2s ease-out forwards, sway3 4.5s ease-in-out infinite; }
+.flower.sway-1 {
+    animation: flowerAppear 1.2s ease-out forwards, sway1 5s ease-in-out infinite;
+    animation-delay: var(--appearance-delay, 0s), calc(var(--appearance-delay, 0s) + 1.2s);
+}
+.flower.sway-2 {
+    animation: flowerAppear 1.2s ease-out forwards, sway2 6s ease-in-out infinite;
+    animation-delay: var(--appearance-delay, 0s), calc(var(--appearance-delay, 0s) + 1.2s);
+}
+.flower.sway-3 {
+    animation: flowerAppear 1.2s ease-out forwards, sway3 4.5s ease-in-out infinite;
+    animation-delay: var(--appearance-delay, 0s), calc(var(--appearance-delay, 0s) + 1.2s);
+}
+
+/* Bloom (opening) animation uses per-flower --bloom-delay to create wave */
+.bloom {
+    animation: bloomGrow 700ms cubic-bezier(.2,.9,.2,1) forwards;
+    animation-delay: var(--bloom-delay, 0s);
+    opacity: 1 !important;
+}
+
+@keyframes bloomGrow {
+    0% { transform: translate(-50%, -50%) scale(2.3); filter: drop-shadow(0 5px 15px rgba(244,225,87,0.4)); }
+    50% { transform: translate(-50%, -55%) scale(2.9); filter: drop-shadow(0 12px 30px rgba(244,225,87,0.75)); }
+    100% { transform: translate(-50%, -50%) scale(2.5); filter: drop-shadow(0 8px 20px rgba(244,225,87,0.5)); }
+}
 
 /* Botón principal */
 .send-button {

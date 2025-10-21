@@ -53,7 +53,10 @@ const FlowersGarden = ({ isSendingCariño, createMiniConfetti }) => {
                     isBlooming={!!isSendingCariño}
                     // stagger: combine baseDelay with index-based offset when blooming (seconds)
                     // aumentar el offset por índice para una onda más pronunciada
-                    animationDelay={isSendingCariño ? (f.baseDelay + idx * 0.14) : f.baseDelay}
+                    // appearanceDelay: for progressive initial appearance
+                    appearanceDelay={f.baseDelay + idx * 0.04}
+                    // bloomDelay: longer offset for pronounced wave on bloom
+                    bloomDelay={isSendingCariño ? (f.baseDelay + idx * 0.14) : f.baseDelay}
                     gradientId={f.id}
                     style={{
                         position: 'absolute',
