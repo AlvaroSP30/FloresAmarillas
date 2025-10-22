@@ -1,4 +1,5 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
+import Fireworks from './Fireworks.jsx';
 
 // Sky component: renders a decorative full moon and a set of twinkling stars
 const Sky = ({ starCount = 28 }) => {
@@ -15,9 +16,23 @@ const Sky = ({ starCount = 28 }) => {
         });
     }, [starCount]);
 
+    const [showFireworks, setShowFireworks] = useState(false);
+
+    const handleMoonClick = (e) => {
+        // compute moon center in viewport coords
+        const targetEl = e.currentTarget;
+        const rect = targetEl.getBoundingClientRect();
+        const origin = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+        // set explosion target to top-center of the viewport (approx. 12% height)
+        const target = { x: window.innerWidth / 2, y: window.innerHeight * 0.12 };
+        setShowFireworks({ origin, target });
+        // auto-hide after a short while
+        setTimeout(() => setShowFireworks(false), 3000);
+    };
+
     return (
         <div className="sky" aria-hidden>
-            <div className="moon" />
+            <div className="moon" onClick={handleMoonClick} role="button" aria-label="Luna" />
             {stars.map(s => (
                 <div
                     key={s.key}
@@ -32,6 +47,7 @@ const Sky = ({ starCount = 28 }) => {
                     }}
                 />
             ))}
+            {showFireworks && <Fireworks origin={showFireworks.origin} target={showFireworks.target} bursts={4} particlesPerBurst={20} />}
         </div>
     );
 };

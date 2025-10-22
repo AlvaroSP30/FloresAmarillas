@@ -79,6 +79,7 @@ body::before {
     inset: 0;
     width: 100%;
     height: 100%;
+    /* keep the sky itself non-interactive but allow the moon to receive events */
     pointer-events: none;
     z-index: 1;
 }
@@ -93,6 +94,14 @@ body::before {
     background: radial-gradient(circle at 40% 30%, #ffffff 0%, #fffdf5 18%, #f3f1e6 35%, #e9e6d8 55%, rgba(230,220,200,0.9) 75%, rgba(230,220,200,0.6) 100%);
     box-shadow: 0 0 80px 20px rgba(255,255,240,0.12), 0 0 200px 60px rgba(244,225,87,0.04) inset;
     animation: moonPulse 6s ease-in-out infinite;
+    /* allow clicking the moon even though .sky is non-interactive */
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+.sky .moon:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 120px 30px rgba(255,255,240,0.14);
 }
 
 @keyframes moonPulse {
@@ -306,6 +315,67 @@ body::before {
     inset: 0;
     pointer-events: none;
     z-index: 50;
+}
+
+/* Fireworks */
+.fireworks-container {
+    position: absolute;
+    top: 6%;
+    left: 0;
+    width: 100%;
+    height: 200px;
+    pointer-events: none;
+    z-index: 300;
+}
+
+.firework-burst {
+    position: absolute;
+    top: 40px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff 0%, #ffd54f 40%, #ff3d00 100%);
+    box-shadow: 0 0 8px rgba(255,200,80,0.9), 0 0 18px rgba(255,100,50,0.6);
+    transform: translateY(0) scale(0.6);
+    animation: burst 900ms ease-out forwards;
+}
+
+/* New fireworks styles (particles) */
+.fireworks-root, .fireworks-container { position: absolute; inset: 0; pointer-events: none; z-index: 300; }
+.firework-explosion {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    will-change: transform, opacity;
+}
+.firework-particle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    opacity: 0;
+    transform: translate(0,0) scale(1);
+    animation-name: fireworkFly, fireworkFade;
+    animation-timing-function: cubic-bezier(.2,.9,.2,1);
+    animation-fill-mode: forwards;
+}
+
+@keyframes fireworkFly {
+    0% { transform: translate(0,0) scale(0.6); opacity: 0.95; }
+    60% { transform: translate(var(--dx), var(--dy)) scale(1.1); opacity: 1; }
+    100% { transform: translate(calc(var(--dx) * 1.05), calc(var(--dy) * 1.05)) scale(0.8); opacity: 0; }
+}
+
+@keyframes fireworkFade {
+    0% { opacity: 0.9; }
+    70% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+@keyframes burst {
+    0% { opacity: 0; transform: translateY(0) scale(0.6); }
+    30% { opacity: 1; transform: translateY(-40px) scale(1.1); }
+    60% { opacity: 0.9; transform: translateY(-80px) scale(1.6); box-shadow: 0 0 18px rgba(255,200,80,0.95); }
+    100% { opacity: 0; transform: translateY(-140px) scale(0.8); }
 }
 
 .petal {
