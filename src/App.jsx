@@ -11,15 +11,16 @@ const SONG = {
     src: "/audio/Danny Ocean.mp3",
     lyrics: [
     { text: "A veces, sin avisar, apareces en mi cabeza...", time: 0 },
-    { text: "Y no te voy a mentir, me cambia el humor al instante.", time: 4000 },
-    { text: "No sé cómo lo haces, pero logras que sonría solo.", time: 8000 },
+    { text: "Solo basta pensarte un segundo, y el día se siente un poco mejor.", time: 4000 },
+    { text: "Hay algo en ti que simplemente alegra mis días.", time: 8000 },
     { text: "Tienes ese algo que no sé cómo explicar.", time: 12000 },
     { text: "Gracias por ser tan tú, osea Rigg :3.", time: 16000 },
     { text: "Tan tierna, alegre y con ese toque de estilo que ni Pinterest iguala.", time: 20000 },
-    { text: "Nunca pierdas tu escencia que es lo que te hace muy especial.", time: 24000 },
-    { text: "Y sí... apareces hasta en mis pensamientos bonitos.", time: 32000 },
+    { text: "Nunca pierdas tu esencia, que es lo que te hace muy especial.", time: 24000 },
+    { text: "Y sí... apareces hasta en mis pensamientos bonitos.", time: 28000 },
 ],
 duration: 36000
+
 };
 
 
