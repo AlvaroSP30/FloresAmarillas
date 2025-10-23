@@ -16,9 +16,9 @@ const SONG = {
     { text: "Supongo que tuve suerte de cruzarme contigo.", time: 12000 },
     { text: "Gracias por ser tan tú, osea Rigg :3.", time: 16000 },
     { text: "Tan auténtica, alegre y con un buen gusto para la moda", time: 20000 },
-    { text: "que ni Pinteres se iguala", time: 20000 },
-    { text: "Nunca cambies tu forma de ser, es lo que te hace única.", time: 24000 },
-    { text: "Y sí... a veces te cuelas entre mis pensamientos sin que me dé cuenta.", time: 28000 },
+    { text: "que ni Pinteres se iguala", time: 24000 },
+    { text: "Nunca cambies tu forma de ser, es lo que te hace única.", time: 28000 },
+    { text: "Y sí... a veces te cuelas entre mis pensamientos sin que me dé cuenta.", time: 30000 },
 ],
 duration: 36000
 
